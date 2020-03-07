@@ -2,7 +2,6 @@ pipeline {
   agent {
     kubernetes {
       label 'jenkins-slave'
-      defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
 kind: Pod
@@ -20,11 +19,6 @@ spec:
     command:
     - cat
     tty: true 
-  - name: kubectl
-    image: iamdeh/bitnami-kubectl
-    command:
-    - cat
-    tty: true
   volumes:
   - name: dockersock
     hostPath:
@@ -51,7 +45,6 @@ spec:
       }
       steps {
         container('tools') {
-          sh "rm -rf ./argocd-demo-deploy"
           sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/IAMDEH/test-k8s-deploy.git"
           sh "git config --global user.email 'ci@ci.com'"
           dir("test-k8s-deploy") {
@@ -64,14 +57,14 @@ spec:
 
     stage('Deploy to Staging') {
       steps {
-        container('kubectl') {
           dir("test-k8s-deploy") {
-            sh "kubectl config view"
-            //sh("kubectl -n test-e2e apply -k ./kustomize/e2e")
+            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
+                sh 'kubectl config view'
+            }
           }
-        }
       }
     }
+    
 /*
     stage('Promote to Prod') {
       steps {

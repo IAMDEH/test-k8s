@@ -63,13 +63,7 @@ spec:
     stage('Deploy to Staging'){
       steps {
         container('kubectl'){
-            withKubeConfig([credentialsId: env.K8s_CREDENTIALS_ID,
-            serverUrl: 'https://10.10.10.18:8443',
-            contextName: 'minikube',
-            clusterName: 'minikube']){
-                
-                sh("kubectl config view")
-            }           
+            sh "kubectl config use-context ${minikube}"          
         }
       }
     }

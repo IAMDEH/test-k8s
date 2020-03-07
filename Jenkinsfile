@@ -20,9 +20,9 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: devkube/kubectl-docker
     command:
-    - cat
+    - version
     tty: true
     volumeMounts:
     - name: kubeconfig

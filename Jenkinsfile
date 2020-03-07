@@ -13,11 +13,27 @@ spec:
     tty: true
     volumeMounts:
     - name: dockersock
-      mountPath: /var/run/docker.sock   
+      mountPath: /var/run/docker.sock  
+  - name: tools
+    image: argoproj/argo-cd-ci-builder:v0.13.1
+    command:
+    - cat
+    tty: true 
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - name: kubeconfig
+      mountPath: /.kube/config 
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconfig
+    hostPath:
+      path: /home/ubuntu/.kube/config
 """
     }
   }
@@ -33,24 +49,29 @@ spec:
         }
       }
     }
-/*
-    stage('Promote to Staging') {
+
+    stage('Deploy to Staging') {
       environment {
         GIT_CREDS = credentials('git')
       }
       steps {
         container('tools') {
-          sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/IAMDEH/test-jenkins-deploy.git"
+          sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/IAMDEH/test-k8s-deploy.git"
           sh "git config --global user.email 'ci@ci.com'"
-
-          dir("test-jenkins-deploy") {
-            sh "cd ./e2e && kustomize edit set image 10.10.10.16:5000/test:${env.GIT_COMMIT}"
+          dir("test-k8s-deploy") {
+            sh "cd ./kustomize/e2e && kustomize edit set image 10.10.10.18:5000/test:${env.GIT_COMMIT}"
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
+          }
+        }
+        container('kubectl'){
+          dir("test-k8s-deploy"){
+            sh "cd ./kustomize"
+            sh "kubectl -n test-e2e apply -k ./e2e"
           }
         }
       }
     }
-
+/*
     stage('Promote to Prod') {
       steps {
         input message:'Approve deployment?'

@@ -19,10 +19,19 @@ spec:
     command:
     - cat
     tty: true 
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:latest
+    tty: true 
+    volumeMounts:
+    - name: kubeconfig
+      mountPath: /.kube/config
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconfig
+    hostPath:
+      path: /home/ubuntu/.kube/config
 """
     }
   }
@@ -51,6 +60,17 @@ spec:
           dir("test-k8s-deploy") {
             sh "cd ./kustomize/e2e && kustomize edit set image 10.10.10.18:5000/test:${env.GIT_COMMIT}"
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
+          }
+        }
+      }
+    }
+
+    stage('Deploy to Staging') {
+      steps {
+        container('kubectl') {
+          dir("test-k8s-deploy") {
+            sh "kubectl config view"
+            //sh "kubectl -n test-e2e apply -k ./kustomize/e2e"
           }
         }
       }

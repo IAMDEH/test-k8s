@@ -20,20 +20,25 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: alexeiled/kubeshell:latest
     command:
     - cat
     tty: true
     volumeMounts:
-    - name: kubeconf
-      mountPath: /home/ubuntu/.minikube 
+    - name: minikube
+      mountPath: /home/ubuntu/.minikube
+    - name: kube
+      mountPath: /config/.kube
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
-  - name: kubeconf
+  - name: minikube
     hostPath:
       path: /home/ubuntu/.minikube
+  - name: kube
+    hostPath:
+      path: /home/ubuntu/.kube
 """
     }
   }
@@ -65,14 +70,7 @@ spec:
         }
 
         container('kubectl'){
-          withEnv(['PATH+EXTRA=/usr/sbin:/usr/bin:/sbin:/bin']) {
-            sh("kubectl config --kubeconfig=config set-cluster minikube --server=https://10.10.10.18:8443 --certificate-authority=/home/ubuntu/.minikube/ca.crt")
-            sh("kubectl config --kubeconfig=config set-credentials minikube --client-certificate=/home/ubuntu/.minikube/client.crt --client-key=/home/ubuntu/.minikube/client.key")
-            sh("kubectl config --kubeconfig=config set-context minikube --cluster=minikube --namespace=test-e2e --user=minikube")
-            sh("kubectl config use-context minikube") 
-            sh("kubectl config view") 
-          }        
-        }
+          sh "kubectl config view"
       }
     }
 

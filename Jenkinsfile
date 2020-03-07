@@ -20,14 +20,20 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:latest
+    image: bitnami/kubectl:latest
     command:
     - cat
     tty: true
+    volumeMounts:
+    - name: kubeconf
+      mountPath: /home 
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconf
+    hostPath:
+      path: /home/ubuntu/.minikube
 """
     }
   }
@@ -63,7 +69,11 @@ spec:
     stage('Deploy to Staging'){
       steps {
         container('kubectl'){
-            sh "kubectl config use-context ${minikube}"          
+            sh "kubectl config --kubeconfig=config set-cluster minikube --server=https://10.10.10.18:8443 --certificate-authority=/home/ca.crt"
+            sh "kubectl config --kubeconfig=config set-credentials minikube --client-certificate=/home/client.crt --client-key=/home/client.key"
+            sh "kubectl config --kubeconfig=config set-context minikube --cluster=minikube --namespace=test-e2e --user=minikube"
+            sh "kubectl config use-context minikube" 
+            sh "kubectl config view"         
         }
       }
     }

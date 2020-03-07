@@ -64,7 +64,7 @@ spec:
       }
     }
 
-    stage('Deploy to Staging'){
+    stage('Deploy too Staging'){
       steps {
         container('kubectl'){
           dir("test-k8s-deploy"){

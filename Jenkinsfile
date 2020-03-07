@@ -50,7 +50,7 @@ spec:
       }
     }
 
-    stage('Deploy to Staging') {
+    stage('Promote to Staging') {
       environment {
         GIT_CREDS = credentials('git')
       }
@@ -63,10 +63,14 @@ spec:
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
           }
         }
+      }
+    }
+
+    stage('Deploy to Staging'){
+      steps {
         container('kubectl'){
           dir("test-k8s-deploy"){
-            sh "cd ./kustomize"
-            sh "kubectl -n test-e2e apply -k ./e2e"
+            sh "kubectl -n test-e2e apply -k ./kustomize/e2e"
           }
         }
       }

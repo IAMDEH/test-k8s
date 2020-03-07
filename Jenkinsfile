@@ -21,8 +21,6 @@ spec:
     tty: true 
   - name: kubectl
     image: iamdeh/kubectl:v1.7.1
-    command:
-    - version
     tty: true
     volumeMounts:
     - name: kubeconfig

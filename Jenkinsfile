@@ -65,6 +65,7 @@ spec:
       steps {
         container('kubectl'){
           dir("test-k8s-deploy") {
+              sh "kubectl config set-context --current --namespace=test-e2e"
               sh "kubectl config view"
           }
         }  

@@ -24,16 +24,10 @@ spec:
     command:
     - cat
     tty: true
-    volumeMounts:
-    - name: kubeconfig
-      mountPath: /usr/local/bin/kubectl
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
-  - name: kubeconfig
-    hostPath:
-      path: /usr/local/bin/kubectl
 """
     }
   }
@@ -69,11 +63,13 @@ spec:
     stage('Deploy to Staging'){
       steps {
         container('kubectl'){
-          dir("test-k8s-deploy"){
-            sh "pwd"
-            sh "kubectl config view"
-            //sh "kubectl -n test-e2e apply -k ./kustomize/e2e"
-          }
+            withKubeConfig([credentialsId: env.K8s_CREDENTIALS_ID,
+            serverUrl: 'https://10.10.10.18:8443',
+            contextName: 'minikube',
+            clusterName: 'minikube']){
+                
+                sh("kubectl config view")
+            }           
         }
       }
     }

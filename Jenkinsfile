@@ -65,9 +65,7 @@ spec:
       steps {
         container('kubectl'){
           dir("test-k8s-deploy") {
-            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
-              sh 'kubectl config view'
-            }
+              sh "kubectl config view"
           }
         }  
       }

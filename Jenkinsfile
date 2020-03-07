@@ -39,7 +39,7 @@ spec:
       }
     }
 
-    stage('Promote to Staging') {
+    stage('Deploy to Staging') {
       environment {
         GIT_CREDS = credentials('git')
       }
@@ -50,21 +50,13 @@ spec:
           dir("test-k8s-deploy") {
             sh "cd ./kustomize/e2e && kustomize edit set image 10.10.10.18:5000/test:${env.GIT_COMMIT}"
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
+            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
+                sh "kubectl config view"
+            }
           }
         }
       }
-    }
-
-    stage('Deploy to Staging') {
-      steps {
-          dir("test-k8s-deploy") {
-            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
-                sh 'kubectl config view'
-            }
-          }
-      }
-    }
-    
+    } 
 /*
     stage('Promote to Prod') {
       steps {

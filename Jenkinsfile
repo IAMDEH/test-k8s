@@ -73,7 +73,7 @@ spec:
           sh "kubectl config view"
       }
     }
-
+  }
 
 /*
     stage('Promote to Prod') {

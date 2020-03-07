@@ -23,11 +23,17 @@ spec:
     image: lachlanevenson/k8s-kubectl:latest
     command:
     - cat
-    tty: true 
+    tty: true
+    volumeMounts:
+    - name: dockersock
+      mountPath: /.kube/config
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconf
+    hostPath:
+      path: /home/ubuntu/.kube/config
 """
     }
   }
@@ -65,7 +71,7 @@ spec:
       steps {
         container('kubectl'){
           dir("test-k8s-deploy") {
-              sh "kubectl config set-context --current --namespace=test-e2e"
+              sh "KUBECONFIG=/.kube/config"
               sh "kubectl config view"
           }
         }  

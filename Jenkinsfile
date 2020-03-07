@@ -45,6 +45,7 @@ spec:
       }
       steps {
         container('tools') {
+          sh "rm -rf ./argocd-demo-deploy"
           sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/IAMDEH/test-k8s-deploy.git"
           sh "git config --global user.email 'ci@ci.com'"
           dir("test-k8s-deploy") {

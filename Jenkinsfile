@@ -2,6 +2,7 @@ pipeline {
   agent {
     kubernetes {
       label 'jenkins-slave'
+      defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
 kind: Pod
@@ -20,18 +21,14 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:latest
-    tty: true 
-    volumeMounts:
-    - name: kubeconfig
-      mountPath: /.kube/config
+    image: gcr.io/cloud-builders/kubectl
+    command:
+    - cat
+    tty: true
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
-  - name: kubeconfig
-    hostPath:
-      path: /home/ubuntu/.kube/config
 """
     }
   }
@@ -69,8 +66,8 @@ spec:
       steps {
         container('kubectl') {
           dir("test-k8s-deploy") {
-            sh "kubectl config view"
-            //sh "kubectl -n test-e2e apply -k ./kustomize/e2e"
+            sh("kubectl config view")
+            //sh("kubectl -n test-e2e apply -k ./kustomize/e2e")
           }
         }
       }

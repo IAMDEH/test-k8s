@@ -21,7 +21,7 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
+    image: lachlanevenson/k8s-kubectl:v1.8.8
     command:
     - cat
     tty: true
@@ -72,7 +72,7 @@ spec:
       steps {
         container('kubectl') {
           dir("test-k8s-deploy") {
-            sh("kubectl config view")
+            sh "kubectl config view"
             //sh("kubectl -n test-e2e apply -k ./kustomize/e2e")
           }
         }

@@ -19,16 +19,25 @@ spec:
     command:
     - cat
     tty: true 
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:latest
+    tty: true
+    volumeMounts:
+    - name: kubeconfig
+      mountPath: /usr/local/bin/kubectl
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconfig
+    hostPath:
+      path: /usr/local/bin/kubectl
 """
     }
   }
   stages {
 
-    /*stage('Build & Push') {
+    stage('Build & Push') {
       steps {
         container('docker') {
           // Build new image
@@ -37,7 +46,7 @@ spec:
             sh "docker push 10.10.10.18:5000/test:${env.GIT_COMMIT}"
         }
       }
-    }*/
+    }
 
     stage('Promote to Staging') {
       environment {
@@ -45,7 +54,6 @@ spec:
       }
       steps {
         container('tools') {
-          sh "rm -rf ./argocd-demo-deploy"
           sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/IAMDEH/test-k8s-deploy.git"
           sh "git config --global user.email 'ci@ci.com'"
           dir("test-k8s-deploy") {
@@ -56,16 +64,16 @@ spec:
       }
     }
 
-    stage('Deploy to Staging') {
+    stage('Deploy to Staging'){
       steps {
-          dir("test-k8s-deploy") {
-            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
-                sh 'kubectl config view'
-            }
+        container('kubectl'){
+          dir("test-k8s-deploy"){
+            sh "kubectl config view"
+            //sh "kubectl -n test-e2e apply -k ./kustomize/e2e"
           }
+        }
       }
     }
-    
 /*
     stage('Promote to Prod') {
       steps {

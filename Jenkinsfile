@@ -19,6 +19,11 @@ spec:
     command:
     - cat
     tty: true 
+  - name: kubectl
+    image: lachlanevenson/k8s-kubectl:latest
+    command:
+    - cat
+    tty: true 
   volumes:
   - name: dockersock
     hostPath:
@@ -39,24 +44,35 @@ spec:
       }
     }
 
-    stage('Deploy to Staging') {
+    stage('Promote to Staging') {
       environment {
         GIT_CREDS = credentials('git')
       }
       steps {
         container('tools') {
+          sh "rm -rf ./argocd-demo-deploy"
           sh "git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@github.com/IAMDEH/test-k8s-deploy.git"
           sh "git config --global user.email 'ci@ci.com'"
           dir("test-k8s-deploy") {
             sh "cd ./kustomize/e2e && kustomize edit set image 10.10.10.18:5000/test:${env.GIT_COMMIT}"
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
-            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
-                sh "kubectl config view"
-            }
           }
         }
       }
-    } 
+    }
+
+    stage('Deploy to Staging') {
+      steps {
+        container('kubectl'){
+          dir("test-k8s-deploy") {
+            withKubeConfig([credentialsId: 'kubeconfig', serverUrl: 'https://10.10.10.18:8443']) {
+              sh 'kubectl config view'
+            }
+          }
+        }  
+      }
+    }
+    
 /*
     stage('Promote to Prod') {
       steps {

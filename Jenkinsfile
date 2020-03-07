@@ -20,7 +20,7 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: iamdeh/kubectl:v1.7.1
+    image: lachlanevenson/k8s-kubectl:latest
     tty: true
     volumeMounts:
     - name: kubeconfig

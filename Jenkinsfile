@@ -21,20 +21,14 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: iamdeh/bitnami-kubectl
     command:
     - cat
     tty: true
-    volumeMounts:
-    - name: kubeconfig
-      mountPath: /.kube/config
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
-  - name: kubeconfig
-    hostPath:
-      path: /home/ubuntu/.kube/config
 """
     }
   }

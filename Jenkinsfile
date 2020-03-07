@@ -21,6 +21,8 @@ spec:
     tty: true 
   - name: kubectl
     image: lachlanevenson/k8s-kubectl:latest
+    command:
+    - cat
     tty: true
     volumeMounts:
     - name: kubeconfig
@@ -68,6 +70,7 @@ spec:
       steps {
         container('kubectl'){
           dir("test-k8s-deploy"){
+            sh "pwd"
             sh "kubectl config view"
             //sh "kubectl -n test-e2e apply -k ./kustomize/e2e"
           }

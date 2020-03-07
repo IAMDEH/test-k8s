@@ -63,11 +63,7 @@ spec:
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
           }
         }
-      }
-    }
 
-    stage('Deploy to Staging'){
-      steps {
         container('kubectl'){
             sh("kubectl config --kubeconfig=config set-cluster minikube --server=https://10.10.10.18:8443 --certificate-authority=/home/ubuntu/.minikube/ca.crt")
             sh("kubectl config --kubeconfig=config set-credentials minikube --client-certificate=/home/ubuntu/.minikube/client.crt --client-key=/home/ubuntu/.minikube/client.key")
@@ -77,6 +73,8 @@ spec:
         }
       }
     }
+
+
 /*
     stage('Promote to Prod') {
       steps {

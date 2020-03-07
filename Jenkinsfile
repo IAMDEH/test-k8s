@@ -25,10 +25,15 @@ spec:
     command:
     - cat
     tty: true
+  - name: kubeconfig
+      mountPath: /.kube/config
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconfig
+    hostPath:
+      path: /home/ubuntu/.kube/config
 """
     }
   }

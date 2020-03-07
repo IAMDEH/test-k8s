@@ -25,15 +25,15 @@ spec:
     - cat
     tty: true
     volumeMounts:
-    - name: dockersock
-      mountPath: /.kube/config
+    - name: kubeconf
+      mountPath: /home/ubuntu/.minikube
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
   - name: kubeconf
     hostPath:
-      path: /home/ubuntu/.kube/config
+      path: /home/ubuntu/.minikube
 """
     }
   }
@@ -71,7 +71,10 @@ spec:
       steps {
         container('kubectl'){
           dir("test-k8s-deploy") {
-              sh "KUBECONFIG=/.kube/config"
+              sh "kubectl config --kubeconfig=config set-cluster minikube --server=https://10.10.10.18:8443 --certificate-authority=/home/ubuntu/.minikube/ca.crt"
+              sh "kubectl config --kubeconfig=config set-credentials minikube --client-certificate=/home/ubuntu/.minikube/client.crt --client-key=/home/ubuntu/.minikube/client.key"
+              sh "kubectl config --kubeconfig=config set-context minikube --cluster=minikube --namespace=test-e2e --user=minikube"
+              sh "kubectl config --kubeconfig=config use-context minikube"
               sh "kubectl config view"
           }
         }  

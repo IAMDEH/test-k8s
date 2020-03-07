@@ -20,7 +20,7 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: devkube/kubectl-docker
+    image: iamdeh/kubectl:v1.7.1
     command:
     - version
     tty: true

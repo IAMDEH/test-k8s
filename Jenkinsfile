@@ -25,7 +25,8 @@ spec:
     command:
     - cat
     tty: true
-  - name: kubeconfig
+    volumeMounts:
+    - name: kubeconfig
       mountPath: /.kube/config
   volumes:
   - name: dockersock

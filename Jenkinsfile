@@ -20,25 +20,14 @@ spec:
     - cat
     tty: true 
   - name: kubectl
-    image: alexeiled/kubeshell:latest
+    image: iamdeh/kubectl-deh
     command:
     - cat
     tty: true
-    volumeMounts:
-    - name: minikube
-      mountPath: /home/ubuntu/.minikube
-    - name: kube
-      mountPath: /config/.kube
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
-  - name: minikube
-    hostPath:
-      path: /home/ubuntu/.minikube
-  - name: kube
-    hostPath:
-      path: /home/ubuntu/.kube
 """
     }
   }

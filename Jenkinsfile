@@ -62,6 +62,7 @@ spec:
           sh """
           kubectl config --kubeconfig=/.kube/config use-context minikube
           kubectl config --kubeconfig=/.kube/config view
+          sudo kubectl config view
           """
       }
     }

@@ -60,10 +60,9 @@ spec:
 
         container('kubectl'){
           sh """
-          kubectl config --kubeconfig=/.kube/config use-context minikube
-          kubectl config --kubeconfig=/.kube/config view
-          kubectl config view
           kubectl -n jenkins get pod
+          kubectl -n test-e2e get pod
+          kubectl -n test-prod get pod
           """
       }
     }

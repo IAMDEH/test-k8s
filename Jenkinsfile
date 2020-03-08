@@ -62,7 +62,8 @@ spec:
           sh """
           kubectl config --kubeconfig=/.kube/config use-context minikube
           kubectl config --kubeconfig=/.kube/config view
-          kubectl -n default get pod
+          kubectl config view
+          kubectl -n jenkins get pod
           """
       }
     }

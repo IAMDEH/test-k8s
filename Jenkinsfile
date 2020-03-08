@@ -59,7 +59,7 @@ spec:
         }
 
         container('kubectl'){
-          sh "kubectl config view"
+          sh "kubectl config --kubeconfig=config view"
       }
     }
   }

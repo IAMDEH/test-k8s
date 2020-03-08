@@ -60,9 +60,8 @@ spec:
 
         container('kubectl'){
           sh """
-          kubectl -n jenkins get pod
-          kubectl -n staging get serviceaccounts 
-          kubectl -n production get serviceaccounts 
+          kubectl create namespace test
+          kubectl -n test get serviceaccounts
           """
       }
     }

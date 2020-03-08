@@ -59,11 +59,13 @@ spec:
         }
 
         container('kubectl'){
-          sh "kubectl config --kubeconfig=config set-cluster minikube --server=https://10.10.10.18:8443 --certificate-authority=/home/ubuntu/.minikube/ca.crt"
-          sh "kubectl config --kubeconfig=config set-credentials minikube --client-certificate=/home/ubuntu/.minikube/client.crt --client-key=/home/ubuntu/.minikube/client.key"
-          sh "kubectl config --kubeconfig=config-demo set-context minikube --cluster=minikube --namespace=test-e2e --user=minikube"
-          sh "kubectl config --kubeconfig=config-demo use-context minikube"
-          sh "kubectl config view"
+          sh """
+          kubectl config --kubeconfig=config set-cluster minikube --server=https://10.10.10.18:8443 --certificate-authority=/home/ubuntu/.minikube/ca.crt
+          kubectl config --kubeconfig=config set-credentials minikube --client-certificate=/home/ubuntu/.minikube/client.crt --client-key=/home/ubuntu/.minikube/client.key
+          kubectl config --kubeconfig=config-demo set-context minikube --cluster=minikube --namespace=test-e2e --user=minikube
+          kubectl config --kubeconfig=config-demo use-context minikube
+          kubectl config view
+          """
       }
     }
   }

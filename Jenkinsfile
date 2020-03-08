@@ -60,8 +60,7 @@ spec:
 
         container('kubectl'){
           sh """
-          kubectl create namespace test
-          kubectl -n test get serviceaccounts
+          kubectl delete ns deh
           """
       }
     }

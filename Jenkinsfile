@@ -48,7 +48,6 @@ spec:
       environment {
         GIT_CREDS = credentials('git')
         JENKINS_SA_TOKEN = credentials('SA-Token')
-        USER = "user"
       }
       steps {
         container('tools') {
@@ -62,10 +61,8 @@ spec:
 
         container('kubectl'){
           sh """
-          kubectl get pod -n jenkins --token $JENKINS_SA_TOKEN
-          kubectl get pod -n user-staging --as $USER --token $JENKINS_SA_TOKEN
-          kubectl get pod -n user-production --as $USER --token $JENKINS_SA_TOKEN
-          kubectl get deployment -n user-staging --as $USER --token $JENKINS_SA_TOKEN
+          sh "kubectl get pod -n staging --token $JENKINS_SA_TOKEN"
+          sh "kubectl get deployment -n staging --token $JENKINS_SA_TOKEN"
           """
         }
     }

@@ -63,8 +63,7 @@ spec:
           dir("test-k8s-deploy") {
             sh """
             cd ./kustomize
-            pwd
-            ls
+            kubectl --token $JENKINS_SA_TOKEN -n staging apply -k ./e2e
             """
           }
         }

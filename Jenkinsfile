@@ -76,7 +76,7 @@ spec:
       steps {
         input message:'Approve deployment?'
         container('tools') {
-          dir("test-jenkins-deploy") {
+          dir("test-k8s-deploy") {
             sh "cd ./kustomize/prod && kustomize edit set image 10.10.10.18:5000/test:${env.GIT_COMMIT}"
             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
           }

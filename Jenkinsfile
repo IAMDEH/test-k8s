@@ -60,10 +60,12 @@ spec:
         }
 
         container('kubectl'){
-          sh """
-          kubectl get pod -n staging --token $JENKINS_SA_TOKEN
-          kubectl get deployment -n staging --token $JENKINS_SA_TOKEN
-          """
+          dir("test-k8s-deploy") {
+            sh """
+            cd ./kustomize
+            kubectl --token $JENKINS_SA_TOKEN -n staging apply -k ./e2e
+            """
+          }
         }
     }
   }

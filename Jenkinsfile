@@ -63,7 +63,8 @@ spec:
           dir("test-k8s-deploy") {
             sh """
             cd ./kustomize
-            tree .
+            pwd
+            ls
             """
           }
         }

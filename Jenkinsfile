@@ -62,9 +62,9 @@ spec:
 
         container('kubectl'){
           sh """
-          kubectl get pod -n jenkins --token $JENKINS_SA_TOKEN"
-          kubectl get pod -n user-staging --user $USER --token $JENKINS_SA_TOKEN"
-          kubectl get pod -n user-production --user $USER --token $JENKINS_SA_TOKEN"
+          kubectl get pod -n jenkins --token $JENKINS_SA_TOKEN
+          kubectl get pod -n user-staging --user $USER --token $JENKINS_SA_TOKEN
+          kubectl get pod -n user-production --user $USER --token $JENKINS_SA_TOKEN
           kubectl get deployment -n user-staging --user $USER  --token $JENKINS_SA_TOKEN
           """
         }

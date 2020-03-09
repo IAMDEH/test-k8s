@@ -61,8 +61,8 @@ spec:
 
         container('kubectl'){
           sh """
-          sh "kubectl get pod -n staging --token $JENKINS_SA_TOKEN
-          sh "kubectl get deployment -n staging --token $JENKINS_SA_TOKEN
+          kubectl get pod -n staging --token $JENKINS_SA_TOKEN
+          kubectl get deployment -n staging --token $JENKINS_SA_TOKEN
           """
         }
     }

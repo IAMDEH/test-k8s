@@ -44,7 +44,7 @@ spec:
       }
     }
 
-    stage('Promote to Staging') {
+    stage('Deploy to Staging') {
       environment {
         GIT_CREDS = credentials('git')
       }
@@ -59,10 +59,10 @@ spec:
         }
 
         container('kubectl'){
-          sh """
-          kubectl delete ns deh
-          """
-      }
+          sh "kubectl get pod -n jenkins --as system:serviceaccount:jenkins:jenkins"
+          sh "kubectl get pod -n staging --as system:serviceaccount:jenkins:jenkins"
+          sh "kubectl get pod -n production --as system:serviceaccount:jenkins:jenkins"
+        }
     }
   }
 

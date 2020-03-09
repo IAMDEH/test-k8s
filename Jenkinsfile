@@ -47,6 +47,7 @@ spec:
     stage('Deploy to Staging') {
       environment {
         GIT_CREDS = credentials('git')
+        JENKINS_SA_TOKEN = credentials('SA-Token')
       }
       steps {
         container('tools') {
@@ -59,9 +60,9 @@ spec:
         }
 
         container('kubectl'){
-          sh "kubectl get pod -n jenkins --as system:serviceaccount:jenkins:jenkins"
-          sh "kubectl get pod -n staging --as system:serviceaccount:jenkins:jenkins"
-          sh "kubectl get pod -n production --as system:serviceaccount:jenkins:jenkins"
+          sh "kubectl get pod -n jenkins --token $JENKINS_SA_TOKEN"
+          sh "kubectl get pod -n staging --token $JENKINS_SA_TOKEN"
+          sh "kubectl get pod -n production --token $JENKINS_SA_TOKEN"
         }
     }
   }

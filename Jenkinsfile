@@ -48,6 +48,7 @@ spec:
       environment {
         GIT_CREDS = credentials('git')
         JENKINS_SA_TOKEN = credentials('SA-Token')
+        USER_CONTEXT = "user-context"
       }
       steps {
         container('tools') {
@@ -60,13 +61,11 @@ spec:
         }
 
         container('kubectl'){
-          sh "kubectl get pod -n jenkins"
           sh "kubectl get pod -n jenkins --token $JENKINS_SA_TOKEN"
-          sh "kubectl config current-context"
-          sh "kubectl config current-context --token $JENKINS_SA_TOKEN"
-          //sh "kubectl --context=user-context get pod -n user-staging"
-          //sh "kubectl --context=user-context get pod -n user-production"
-          //sh "kubectl --context=user-context get deployment -n user-staging"
+          sh "kubectl config use-context $USER_CONTEXT --token $JENKINS_SA_TOKEN"
+          sh "kubectl get pod -n user-staging"
+          sh "kubectl get pod -n user-production"
+          sh "kubectl get deployment -n user-staging"
         }
     }
   }

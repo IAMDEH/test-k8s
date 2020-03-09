@@ -63,6 +63,7 @@ spec:
           sh "kubectl get pod -n jenkins --token $JENKINS_SA_TOKEN"
           sh "kubectl get pod -n staging --token $JENKINS_SA_TOKEN"
           sh "kubectl get pod -n production --token $JENKINS_SA_TOKEN"
+          sh "kubectl get deployment -n jenkins --token $JENKINS_SA_TOKEN"
         }
     }
   }
